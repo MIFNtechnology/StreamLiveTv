@@ -1,0 +1,41 @@
+name: m3u8 Fetcher
+
+on:
+  push:
+  schedule:
+    - cron: '59 23 * * *'
+permissions: write-all
+
+env:
+  TZ: Asia/Kuala_Lumpur
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Fetch m3u8 Files
+      run: |
+        rm -f ./channels/tv3/index.m3u8
+        wget -O ./channels/tv3/index.m3u8 https://mifntechnology.github.io/siaranMy/channels/Tv3/index.m3u8
+        rm -f ./channels/DidikTv/index.m3u8
+        wget -O ./channels/DidikTv/index.m3u8 https://mifntechnology.github.io/siaranMy/channels/DidikTvKPM/index.m3u8
+        rm -f ./channels/8tv/index.m3u8
+        wget -O ./channels/8tv/index.m3u8 https://mifntechnology.github.io/siaranMy/channels/8tv/index.m3u8
+        rm -f ./channels/tv9/index.m3u8
+        wget -O ./channels/tv9/index.m3u8 https://mifntechnology.github.io/siaranMy/channels/Tv9/index.m3u8
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add ./channels/tv3/index.m3u8
+        git add ./channels/DidikTv/index.m3u8
+        git add ./channels/8tv/index.m3u8
+        git add ./channels/tv9/index.m3u8
+        git commit -m "Update index_m3u8 files" || echo "No changes to commit"
+
+    - name: Push changes
+      run: |
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
