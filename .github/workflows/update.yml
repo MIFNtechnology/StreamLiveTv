@@ -1,0 +1,48 @@
+name: Update
+
+on:
+  workflow_dispatch:
+  watch:
+    types: [started]
+  schedule:
+    - cron: 0 0/24 * * *
+
+permissions:
+ contents: write
+
+env:
+  TZ: Asia/Kuala_Lumpur
+
+jobs:
+  Update:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: GetTime
+      run: echo "DATE=$(date +'%Y-%m-%d %H:%M:%S CST')" >> $GITHUB_ENV
+
+    - name: Update
+      run: |
+        # Channels
+        rm -f myIPtv.m3u8 && wget https://mifntechnology.github.io/siaranMy/myIPtv.m3u8 -O myIPtv.m3u8
+
+        # Program Source
+        rm -f epg.xml && wget https://raw.githubusercontent.com/AqFad2811/epg/main/epg.xml -O epg.xml
+        echo "Already $DATE Automatically update channels" > README.md
+
+    - name: Clean
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout --orphan latest_branch
+        git add -A
+        git commit -am "$DATE"
+        git branch -D main
+        git branch -m main
+
+    - name: Push
+      run: git push -f origin main
