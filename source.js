@@ -3,7 +3,7 @@ let videoSources = [];
 
 // URLs of M3U playlists with identifiers
 const m3uUrls = [
-    { id: 'siaranMy', url: 'myIPtv.m3u8' },
+    { id: 'siaranMy', url: 'https://drive.usercontent.google.com/uc?id=1FFTyWCdNu5maR4uw5HfPKpoeK11pooi4&export=download&auditContext=forDisplay' },
     // Add more sources here with unique IDs
 ];
 // Function to check if the channel is online
